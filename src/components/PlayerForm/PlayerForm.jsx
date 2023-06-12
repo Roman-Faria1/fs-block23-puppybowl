@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
+import "./PlayerForm.css";
 
 let BASE_URL = "https://fsa-puppy-bowl.herokuapp.com";
 
-const PlayerForm = () => {
+const PlayerForm = (props) => {
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
   const [status, setStatus] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const postPlayerInfo = async () => {
+  const allPlayers = props.allPlayers;
+  const setAllPlayers = props.setAllPlayers;
+
+  const postPlayerInfo = async (e) => {
+    e.preventDefault();
     const playerFormInfo = {
       name: name,
       breed: breed,
@@ -28,14 +33,16 @@ const PlayerForm = () => {
         settings
       );
       const data = await response.json();
+      const allPlayersCopy = [...allPlayers, data.data.newPlayer];
+      setAllPlayers(allPlayersCopy);
     } catch (error) {
       console.error(error);
     }
   };
   return (
     <div>
-      <form>
-        <label>
+      <form onSubmit={postPlayerInfo}>
+        <label className="ml-5">
           Name:
           <input
             type="text"
@@ -43,7 +50,7 @@ const PlayerForm = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </label>
-        <label>
+        <label className="pl-3">
           Breed:
           <input
             type="text"
@@ -51,7 +58,7 @@ const PlayerForm = () => {
             onChange={(e) => setBreed(e.target.value)}
           />
         </label>
-        <label>
+        <label className="pl-3">
           Status:
           <input
             type="text"
@@ -59,7 +66,7 @@ const PlayerForm = () => {
             onChange={(e) => setStatus(e.target.value)}
           />
         </label>
-        <label>
+        <label className="pl-3">
           Image URL:
           <input
             type="text"
@@ -67,7 +74,9 @@ const PlayerForm = () => {
             onChange={(e) => setImageUrl(e.target.value)}
           />
         </label>
-        <button onClick={postPlayerInfo}>Submit</button>
+        <button className="bg-purple-900 ml-5 mr-5" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   );
